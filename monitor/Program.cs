@@ -4,14 +4,15 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 
 
-using static monitor.DataBase;
+using static monitor.Models.MonitoringContext;
+using monitor.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationContext>();
+builder.Services.AddDbContext<MonitoringContext>();
 
 var app = builder.Build();
 
@@ -30,6 +31,20 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    // Добавьте маршрут для обработки запроса на аутентификацию
+    endpoints.MapControllerRoute(
+        name: "login",
+        pattern: "account/login",
+        defaults: new { controller = "Account", action = "Login" });
+});
+
 
 app.MapFallbackToFile("index.html"); ;
 

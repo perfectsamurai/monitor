@@ -5,7 +5,7 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:46628';
 
 const context =  [
-    "/api/values"
+    "/api/DynamogramContoller", "/api/Account","/api/AddDynamogram"
 ];
 
 module.exports = function(app) {
@@ -16,6 +16,16 @@ module.exports = function(app) {
       Connection: 'Keep-Alive'
     }
   });
+    module.exports = function (app) {
+        app.use(
+            '/api/Account/Logout',
+            createProxyMiddleware({
+                target: 'http://localhost:44469', // «амените на соответствующий URL вашего сервера
+                changeOrigin: true,
+            })
+        );
+    };
+
 
   app.use(appProxy);
 };
