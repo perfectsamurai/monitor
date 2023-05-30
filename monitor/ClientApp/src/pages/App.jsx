@@ -67,18 +67,37 @@ const App = () => {
                         <table className="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>IdEmployee</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Address</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
+                                    <th>Phone</th>
                                     <th>Phone</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {dynamograms.map((item) => (
                                     <tr key={item.dynamogramId}>
-                                        <td>{item.dynamogramId}</td>
                                         <td>{item.well.name}</td>
+                                        <td>{item.date}</td>
+                                        <td>{item.varQ}</td>
+                                        <td>{item.varPmax}</td>
+                                        <td>{item.varPmin}</td>
+                                        <td>{item.typeDevice}</td>
+                                        <td>{item.varN}</td>
+                                        <td>{item.varL}</td>
+                                        <td>{item.varKpod}</td>
+                                        <td>{item.opinion}</td>
+                                        <td>{item.varG}</td>
+                                        <td>{item.varKnap}</td>
                                         <td>{item.user.firstName} {item.user.lastName}</td>
                                     </tr>
                                 ))}

@@ -3,22 +3,29 @@ import axios from 'axios';
 
 const Create = () => {
     const [wellId, setWellId] = useState('');
-    const [date, setDate] = useState('');
     const [varQ, setVarQ] = useState('');
     const [varPmax, setVarPmax] = useState('');
     const [varPmin, setVarPmin] = useState('');
-    const [wellList, setWellList] = useState([]); // Список записей из таблицы Well
+    const [varN, setVarN] = useState('');
+    const [varL, setVarL] = useState('');
+    const [varKpod, setVarKpod] = useState('');
+    const [varKnap, setVarKnap] = useState('');
+    const [varG, setVarG] = useState('');
+    const [opinion, setOpinion] = useState('');
+    const [typeDevice, setTypeDevice] = useState('');
+    const [wellList, setWellList] = useState([]);
+    const [excelFile, setExcelFile] = useState(null);
 
     useEffect(() => {
-        fetchWellList(); // Получение списка Well при загрузке компонента
+        fetchWellList();
     }, []);
 
     const fetchWellList = async () => {
         try {
-            const response = await axios.get('/api/AddDynamogram/GetWellList'); // Запрос списка Well
+            const response = await axios.get('/api/AddDynamogram/GetWellList');
 
             if (response.status === 200) {
-                setWellList(response.data); // Установка полученного списка в состояние
+                setWellList(response.data);
             } else {
                 console.error('Ошибка при получении списка Well');
             }
@@ -32,10 +39,16 @@ const Create = () => {
 
         const dynamogramData = {
             wellId,
-            date,
             varQ,
             varPmax,
             varPmin,
+            varN,
+            varL,
+            varKpod,
+            varKnap,
+            varG,
+            opinion,
+            typeDevice,
             // остальные поля Dynamogram
             userId: getUserIdFromCookie(),
         };
@@ -46,6 +59,7 @@ const Create = () => {
             if (response.status === 200) {
                 console.log('Данные Dynamogram успешно отправлены на сервер');
                 // Дополнительная обработка после успешной отправки
+                window.location.reload();
             } else {
                 console.error('Ошибка при отправке данных Dynamogram на сервер');
             }
@@ -65,8 +79,35 @@ const Create = () => {
         return null;
     };
 
-  
+    const handleWellIdChange = (event) => {
+        setWellId(event.target.value);
+    };
 
+    const handleFileChange = (event) => {
+        setExcelFile(event.target.files[0]);
+    };
+
+    const handleSubmitImport = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('excelFile', excelFile);
+        formData.append('userId', getUserIdFromCookie());
+        formData.append('wellId', wellId);
+
+        try {
+            const response = await axios.post('/api/AddDynamogram/ImportFromExcel', formData);
+
+            if (response.status === 200) {
+                window.location.reload();
+                // Обработка успешного ответа
+            } else {
+                // Обработка ошибки
+            }
+        } catch (error) {
+            // Обработка ошибки
+        }
+    };
 
     return (
         <div>
@@ -74,17 +115,13 @@ const Create = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Well ID:</label>
-                    <select value={wellId} onChange={(e) => setWellId(e.target.value)}>
+                    <select value={wellId} onChange={handleWellIdChange}>
                         {wellList.map((well) => (
                             <option key={well.wellId} value={well.wellId}>
                                 {well.name}
                             </option>
                         ))}
                     </select>
-                </div>
-                <div>
-                    <label>Date:</label>
-                    <input type="text" value={date} onChange={(e) => setDate(e.target.value)} />
                 </div>
                 <div>
                     <label>VarQ:</label>
@@ -98,10 +135,66 @@ const Create = () => {
                     <label>VarPmin:</label>
                     <input type="text" value={varPmin} onChange={(e) => setVarPmin(e.target.value)} />
                 </div>
+                <div>
+                    <label>varN:</label>
+                    <input type="text" value={varN} onChange={(e) => setVarN(e.target.value)} />
+                </div>
+                <div>
+                    <label>varL:</label>
+                    <input type="text" value={varL} onChange={(e) => setVarL(e.target.value)} />
+                </div>
+                <div>
+                    <label>varKpod:</label>
+                    <input type="text" value={varKpod} onChange={(e) => setVarKpod(e.target.value)} />
+                </div>
+                <div>
+                    <label>VarKnap:</label>
+                    <input type="text" value={varKnap} onChange={(e) => setVarKnap(e.target.value)} />
+                </div>
+                <div>
+                    <label>VarG:</label>
+                    <input type="text" value={varG} onChange={(e) => setVarG(e.target.value)} />
+                </div>
+                <div>
+                    <label>TypeDevice:</label>
+                    <input type="text" value={typeDevice} onChange={(e) => setTypeDevice(e.target.value)} />
+                </div>
+                <div>
+                    <label>Opinion:</label>
+                    <input type="text" value={opinion} onChange={(e) => setOpinion(e.target.value)} />
+                </div>
                 {/* остальные поля Dynamogram */}
                 <button type="submit">Отправить</button>
             </form>
-          
+
+            <form onSubmit={handleSubmitImport} encType="multipart/form-data">
+                <div className="form-group d-flex justify-content-between mb-3">
+                    <label className="control-label w-25">Выберите скважину</label>
+                    <select value={wellId} onChange={handleWellIdChange}>
+                        {wellList.map((well) => (
+                            <option key={well.wellId} value={well.wellId}>
+                                {well.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group d-flex justify-content-between mb-3">
+                    <label className="control-label w-25">Выберите файл Excel</label>
+                    <input
+                        type="file"
+                        name="excelFile"
+                        onChange={handleFileChange}
+                        className="form-control-file"
+                        accept=".xlsx, .xls"
+                        required
+                    />
+                </div>
+
+                <div className="form-group d-grid gap-2 d-md-flex justify-content-md-end">
+                    <input type="submit" value="Импортировать" className="btn btn-success me-md-2" />
+                </div>
+            </form>
         </div>
     );
 };

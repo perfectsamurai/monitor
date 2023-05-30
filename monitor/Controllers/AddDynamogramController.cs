@@ -45,6 +45,7 @@ namespace monitoring.Controllers
                 int VarKPod_G = _context.Guides.First(q => q.WellId == dynamogram.WellId).VarKpod;
                 int VarKNap_G = _context.Guides.First(q => q.WellId == dynamogram.WellId).VarKnap;
                 int VarG_G = _context.Guides.First(q => q.WellId == dynamogram.WellId).VarG;
+                dynamogram.Date = DateTime.Now.ToString();
 
                 _context.Dynamograms.Add(dynamogram);
                 await _context.SaveChangesAsync();
@@ -68,12 +69,13 @@ namespace monitoring.Controllers
         }
         [HttpPost]
         [Route("ImportFromExcel")]
-        public async Task<IActionResult> ImportFromExcel(IFormFile excelFile, int userId, [Bind("WellId")] Dynamogram dynamograms)
+        public async Task<IActionResult> ImportFromExcel([FromForm] IFormFile excelFile, [FromForm] int userId, [FromForm] int wellId)
         {
             if (excelFile != null && excelFile.Length > 0)
             {
-                using (var stream = excelFile.OpenReadStream())
+                using (var stream = new MemoryStream())
                 {
+                    await excelFile.CopyToAsync(stream);
                     using (var spreadsheetDoc = SpreadsheetDocument.Open(stream, false))
                     {
                         var workbookPart = spreadsheetDoc.WorkbookPart;
@@ -81,13 +83,10 @@ namespace monitoring.Controllers
                         var worksheet = worksheetPart.Worksheet;
                         var sheetData = worksheet.GetFirstChild<SheetData>();
 
-                        var rows = sheetData.Elements<Row>().Skip(1); // Пропуск заголовка, начало с 2-й строки
+                        var rows = sheetData.Elements<Row>().Skip(1);
 
                         foreach (var row in rows)
                         {
-                            // Чтение значений ячеек и сохранение данных
-
-
                             var date = DateTime.Now.ToString();
                             var varQ = int.Parse(row.Elements<Cell>().ElementAt(0).CellValue.Text);
                             var varPmax = int.Parse(row.Elements<Cell>().ElementAt(1).CellValue.Text);
@@ -100,12 +99,9 @@ namespace monitoring.Controllers
                             var opinion = row.Elements<Cell>().ElementAt(8).CellValue.Text;
                             var varG = int.Parse(row.Elements<Cell>().ElementAt(9).CellValue.Text);
 
-                            // Сохранение данных в базе данных или другое действие
-
-                            // Пример сохранения данных в базе данных
                             var dynamogram = new Dynamogram
                             {
-                                WellId = dynamograms.WellId,
+                                WellId = wellId,
                                 Date = date,
                                 VarQ = varQ,
                                 VarPmax = varPmax,
@@ -119,17 +115,19 @@ namespace monitoring.Controllers
                                 VarG = varG,
                                 UserId = userId
                             };
-                            int VarQ_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarQ;
-                            int VarPMax_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarPmax;
-                            int VarPMin_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarPmin;
-                            int VarN_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarN;
-                            int VarL_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarL;
-                            int VarKPod_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarKpod;
-                            int VarKNap_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarKnap;
-                            int VarG_G = _context.Guides.First(q => q.WellId == dynamograms.WellId).VarG;
+
+                            int VarQ_G = _context.Guides.First(q => q.WellId == wellId).VarQ;
+                            int VarPMax_G = _context.Guides.First(q => q.WellId == wellId).VarPmax;
+                            int VarPMin_G = _context.Guides.First(q => q.WellId == wellId).VarPmin;
+                            int VarN_G = _context.Guides.First(q => q.WellId == wellId).VarN;
+                            int VarL_G = _context.Guides.First(q => q.WellId == wellId).VarL;
+                            int VarKPod_G = _context.Guides.First(q => q.WellId == wellId).VarKpod;
+                            int VarKNap_G = _context.Guides.First(q => q.WellId == wellId).VarKnap;
+                            int VarG_G = _context.Guides.First(q => q.WellId == wellId).VarG;
 
                             _context.Dynamograms.Add(dynamogram);
                             await _context.SaveChangesAsync();
+
                             if (varQ > VarQ_G)
                             {
                                 Advice advice = new Advice()
@@ -140,19 +138,197 @@ namespace monitoring.Controllers
                                 };
 
                                 _context.Advices.Add(advice);
-
-
-
+                                await _context.SaveChangesAsync();
                             }
+                            if (varQ < VarQ_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 2,
+                                    RoleId = 1,
+                                };
 
-                            _context.SaveChanges();
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varPmax > VarPMax_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 3,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varPmax <  VarPMax_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 4,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varPmin > VarPMin_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 5,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varPmin < VarPMin_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 6,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varN > VarN_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 7,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varN < VarN_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 8,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varL > VarL_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 9,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varL < VarL_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 10,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varKpod > VarKPod_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 11,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varKpod < VarKPod_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 12,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varKnap > VarKNap_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 13,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varKnap < VarKNap_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 14,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varG > VarG_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 15,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
+                            if (varG < VarG_G)
+                            {
+                                Advice advice = new Advice()
+                                {
+                                    DynamogramId = dynamogram.DynamogramId,
+                                    AdviceTextId = 16,
+                                    RoleId = 1,
+                                };
+
+                                _context.Advices.Add(advice);
+                                await _context.SaveChangesAsync();
+                            }
                         }
                     }
                 }
             }
 
             return Ok();
-
         }
+
+
     }
 }
+

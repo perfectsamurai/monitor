@@ -11,7 +11,7 @@ namespace monitoring.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+
     public class AccountController : Controller
     {
         private readonly MonitoringContext _context;
@@ -47,6 +47,8 @@ namespace monitoring.Controllers
                     Response.Cookies.Append("FirstName", $"{users.FirstName}");
                     Response.Cookies.Append("LastName", $"{users.LastName}");
                     Response.Cookies.Append("NgduId", $"{users.NgduId}");
+                    Response.Cookies.Append("Phone", $"{users.Phone}");
+                    Response.Cookies.Append("Email", $"{users.Email}");
 
                     // Дополнительная логика установки куки и перенаправления
 
@@ -65,6 +67,8 @@ namespace monitoring.Controllers
             Response.Cookies.Delete("FirstName");
             Response.Cookies.Delete("LastName");
             Response.Cookies.Delete("NgduId");
+            Response.Cookies.Delete("Phone");
+            Response.Cookies.Delete("Email");
 
             // Дополнительная логика выхода
             // ...
@@ -72,7 +76,24 @@ namespace monitoring.Controllers
             return Ok(); // Возвращаем успешный результат
         }
 
+        [HttpGet("GetRole/{userId}")]
+        public async Task<IActionResult> GetRole(int userId)
+        {
+            // Получение роли пользователя на основе userId
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
 
+            Role role = await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == user.RoleId);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new { name = role.Name });
+        }
 
 
 

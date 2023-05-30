@@ -21,7 +21,7 @@ namespace monitor.Controllers
 
         [HttpGet]
         [Route("GetDynamograms")]
-      
+
         public IActionResult GetDynamograms()
         {
             var dynamograms = _dbContext.Dynamograms
@@ -34,7 +34,7 @@ namespace monitor.Controllers
                 DynamogramId = d.DynamogramId,
                 WellId = d.WellId,
                 Date = d.Date,
-                VarQ= d.VarQ,
+                VarQ = d.VarQ,
                 VarPmax = d.VarPmax,
                 VarPmin = d.VarPmin,
                 TypeDevice = d.TypeDevice,
@@ -76,6 +76,69 @@ namespace monitor.Controllers
             }
 
             return Ok(dynamogramDTOs);
+        }
+        [HttpGet]
+        [Route("GetAdvice")]
+
+        public IActionResult GetAdvice()
+        {
+            var advices = _dbContext.Advices
+                .Include(a => a.AdviceText)
+                .Include(a => a.Dynamogram)
+                .Include(a => a.Role)
+                .ToList();
+
+            var adviceDTOs = advices.Select(a => new Advice
+            {
+                AdviceId = a.AdviceId,
+                AdviceTextId = a.AdviceTextId,
+                DynamogramId = a.DynamogramId,
+                RoleId = a.RoleId,
+              
+
+                // Продолжайте копировать свойства Dynamogram в DTO
+            }).ToList();
+
+            var AdviceTextIds = adviceDTOs.Select(a => a.AdviceTextId).Distinct().ToList();
+            var AdviceText = _dbContext.AdviceTexts.Where(a => AdviceTextIds.Contains(a.AdviceTextId)).ToList();
+
+            var RoleIds = adviceDTOs.Select(r=> r.RoleId).Distinct().ToList();
+            var Roles = _dbContext.Roles.Where(r => RoleIds.Contains(r.RoleId)).ToList();
+
+            var DynamogramIds = adviceDTOs.Select(d => d.DynamogramId).Distinct().ToList();
+            var Dynamograms = _dbContext.Dynamograms.Where(d => DynamogramIds.Contains(d.DynamogramId)).ToList();
+
+
+            var advicetextDTOs = AdviceText.Select(a => new AdviceText
+            {
+                AdviceTextId =a.AdviceTextId,
+                Text = a.Text,
+                Status = a.Status,
+                // Продолжайте копировать свойства Well в DTO
+            }).ToList();
+            var roleDTOs = Roles.Select(r => new Role
+            {
+                RoleId = r.RoleId,
+                Name = r.Name,
+                // Продолжайте копировать свойства Well в DTO
+            }).ToList();
+            var dynamogramDTOs = Dynamograms.Select(d => new Dynamogram
+            {
+                DynamogramId = d.DynamogramId,
+                WellId = d.WellId,
+                // Продолжайте копировать свойства Well в DTO
+            }).ToList();
+
+          
+
+            foreach (var adviceDTO in adviceDTOs)
+            {
+                adviceDTO.AdviceText = advicetextDTOs.FirstOrDefault(a => a.AdviceTextId == adviceDTO.AdviceTextId);
+                adviceDTO.Role = roleDTOs.FirstOrDefault(r => r.RoleId == adviceDTO.RoleId);
+                adviceDTO.Dynamogram = dynamogramDTOs.FirstOrDefault(d => d.DynamogramId == adviceDTO.DynamogramId);
+            }
+
+            return Ok(adviceDTOs);
         }
 
     }

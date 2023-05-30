@@ -17,11 +17,11 @@ const Auth = () => {
             if (response.status === 200) {
                 // Успешная авторизация
                 console.log('Успешная авторизация');
-               
+
                 navigate('/profile'); // Переход на страницу Profile.js
                 window.location.reload();
-                    
-              
+
+
 
             } else {
                 // Ошибка авторизации
@@ -38,28 +38,27 @@ const Auth = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-                <label className="form-label">Введите почту</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    aria-describedby="emailHelp"
-                    value={Email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-            </div>
-            <div className="mb-3">
-                <label className="form-label">Введите пароль</label>
-                <input
-                    type="password"
-                    className="form-control"
-                    value={Password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-            </div>
-            <div className="form-group">
-                <input type="submit" value="Войти" className="btn btn-success" />
+        <form onSubmit={handleSubmit} className="contentBLockAuto mb-40">
+            <div className="wrapperAuto">
+                <div className="autoBlock">
+
+                    <h1 className="autoH">Авторизация</h1>
+                    <input
+                        type="text"
+                        className="form-control"
+                        aria-describedby="emailHelp"
+                        value={Email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    /><br />
+                    <input
+                        type="password"
+                        className="form-control"
+                        value={Password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    /><br />
+                    <button>Войти</button>
+
+                </div>
             </div>
         </form>
     );

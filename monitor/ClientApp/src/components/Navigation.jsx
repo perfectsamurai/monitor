@@ -23,8 +23,7 @@ function Navigation() {
                 <ul>
                     <li><Link to="profile">Профиль</Link></li>
                     <li><Link to="/">Заявки на исследования</Link></li>
-                    <li><a href="#news">План работ</a></li>
-                    <li><a href="#contact">Оценка технического состояния</a></li>
+                    <li><Link to="workplan">План работ</Link></li>
                 </ul>
             </div>
         </div>
