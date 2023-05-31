@@ -1,7 +1,8 @@
+import styles from './Create.module.scss';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Create = () => {
+const Create = (props) => {
     const [wellId, setWellId] = useState('');
     const [varQ, setVarQ] = useState('');
     const [varPmax, setVarPmax] = useState('');
@@ -110,9 +111,15 @@ const Create = () => {
     };
 
     return (
+        <div className={styles.overlay}>
+            <div className={styles.create}>
+                <div className={styles.createBlock}>
+                    <div className={styles.createLab}>
         <div>
             <h2>Создание Dynamogram</h2>
-            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit}>
+                                <div className={styles.gridTab}>
+                                    < div className={styles.grid1}>
                 <div>
                     <label>Well ID:</label>
                     <select value={wellId} onChange={handleWellIdChange}>
@@ -142,7 +149,9 @@ const Create = () => {
                 <div>
                     <label>varL:</label>
                     <input type="text" value={varL} onChange={(e) => setVarL(e.target.value)} />
-                </div>
+                                    </div>
+                                </div>
+                                    < div className={styles.grid2}>
                 <div>
                     <label>varKpod:</label>
                     <input type="text" value={varKpod} onChange={(e) => setVarKpod(e.target.value)} />
@@ -162,14 +171,23 @@ const Create = () => {
                 <div>
                     <label>Opinion:</label>
                     <input type="text" value={opinion} onChange={(e) => setOpinion(e.target.value)} />
-                </div>
-                {/* остальные поля Dynamogram */}
-                <button type="submit">Отправить</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                {/* остальные поля Dynamogram */}
+                                <div className={styles.createButton}>
+                                    <div className={styles.inputButton4}>
+                                        <button type="submit">Отправить</button>
+                                    </div>
+                                    <div className={styles.inputButton3}>
+                                        <button onClick={props.onClose} type="button" value='Отменить' >Отменить</button>
+                                    </div>
+                                </div>
             </form>
 
-            <form onSubmit={handleSubmitImport} encType="multipart/form-data">
-                <div className="form-group d-flex justify-content-between mb-3">
-                    <label className="control-label w-25">Выберите скважину</label>
+                <form onSubmit={handleSubmitImport} encType="multipart/form-data" className="">
+                    <div className="">
+                    <label className="">Выберите скважину</label>
                     <select value={wellId} onChange={handleWellIdChange}>
                         {wellList.map((well) => (
                             <option key={well.wellId} value={well.wellId}>
@@ -179,22 +197,27 @@ const Create = () => {
                     </select>
                 </div>
 
-                <div className="form-group d-flex justify-content-between mb-3">
-                    <label className="control-label w-25">Выберите файл Excel</label>
+                    <div>
+                                    <label className="">Выберите файл Excel</label>
+                                    <div className="inputDate">
                     <input
                         type="file"
                         name="excelFile"
                         onChange={handleFileChange}
-                        className="form-control-file"
+                                        className="search-block3"
                         accept=".xlsx, .xls"
                         required
                     />
-                </div>
+                                    </div></div>
 
-                <div className="form-group d-grid gap-2 d-md-flex justify-content-md-end">
-                    <input type="submit" value="Импортировать" className="btn btn-success me-md-2" />
+                <div className={styles.inputButton4}>
+                     <button type="submit" value="Импортировать" className="btn btn-success me-md-2">Импортировать</button>
                 </div>
-            </form>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from 'xlsx';
+import Search from '../components/Search';
+import Pagination from '../components/Pagination';
 
 const App = () => {
+    const [dynamograms, setDynamograms] = useState([]);
     const [advices, setAdvices] = useState([]);
     const navigate = useNavigate();
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         axios
@@ -53,14 +58,48 @@ const App = () => {
         XLSX.writeFile(workbook, 'advices.xlsx');
     };
 
-    return (
+    const handleFilter = () => {
+        // Применить фильтрацию по диапазону дат
+        const filteredDynamograms = dynamograms.filter(item => {
+            const itemDate = new Date(item.date);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            return itemDate >= start && itemDate <= end;
+        });
 
+        // Обновить состояние с отфильтрованными данными
+        setDynamograms(filteredDynamograms);
+    };
+
+    return (
+        <>
+        <div className="item-grid2">
+                <div className="sort">
+                    <div className="inputDate ">
+                        <h5>period:</h5>
+                        <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                        <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        <input className="search-block3" type="button" onClick={handleFilter} value="filtr" />
+                    </div>
+                </div>
+                <div className="sort2">
+                    <div className="inputButton search-block4 ">
+                        <input type="button" onClick={handleExport} value="export" />
+                    </div>
+                    <div className="contentBLock22">
+                        <Search />
+                    </div>
+                </div>
          
-            <div className="container">
-                <div className="row">
-                    <div className="col-sm-12">
+                
+            </div>
+            <div className="item-grid1 contentBLock mb-40">
+            </div>
+            <section className="item-grid2">
+                <div className="item-scroll">
+                    <div className="table">
                         <table className="table table-striped">
-                            <thead>
+                            <thead className="tbl_header">
                                 <tr>
                                     <th>Name</th>
                                     <th>Email</th>
@@ -82,10 +121,11 @@ const App = () => {
                                 ))}
                             </tbody>
                         </table>
-                        <button onClick={handleExport}>Export</button>
                     </div>
                 </div>
-            </div>
+                <Pagination />
+            </section>
+        </>
       
     );
 };

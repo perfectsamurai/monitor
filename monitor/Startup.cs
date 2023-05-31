@@ -71,5 +71,22 @@ namespace monitoring
                
             });
         }
+        public class SetEncodingMiddleware
+        {
+            private readonly RequestDelegate _next;
+
+            public SetEncodingMiddleware(RequestDelegate next)
+            {
+                _next = next;
+            }
+
+            public async Task Invoke(HttpContext context)
+            {
+                context.Request.Headers["Accept-Charset"] = "utf-8";
+                context.Response.Headers["Content-Type"] = "text/html; charset=utf-8";
+
+                await _next(context);
+            }
+        }
     }
 }

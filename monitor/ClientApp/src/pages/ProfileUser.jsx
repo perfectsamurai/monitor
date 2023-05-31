@@ -92,8 +92,7 @@ const ProfileUser = () => {
                     </div>
                     <div className="inputButtonUser">
                         <input type="button" value="Редактировать" />
-                    </div>
-                    <div className="inputButtonUser">
+
                         <button onClick={handleLogout}>Выход</button>
                     </div>
                 </div>

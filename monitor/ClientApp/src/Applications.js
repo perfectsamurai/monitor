@@ -8,6 +8,7 @@ import App from './pages/App';
 import ProfileUser from './pages/ProfileUser';
 import Auth from './pages/Auth';
 import WorkPlan from './pages/WorkPlan';
+import Report from './pages/Report';
 
 
 import { Routes, Route } from 'react-router-dom';
@@ -25,7 +26,7 @@ function Applications(props) {
                         <Route path='/' element={<App />} />
                         <Route path='profile' element={<ProfileUser />} />
                         <Route path='workplan' element={<WorkPlan />} />
-
+                        <Route path='report' element={<Report />} />
 
                     </Routes>
                 </div>

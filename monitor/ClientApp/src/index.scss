@@ -92,19 +92,30 @@ header{
   border-radius: 10px;
   padding: 0 15px;
 }
-.inputButtonUser{
-  cursor: pointer;
-  margin-top: 15px;
-  input{
-    background-color: #18b273;
+.inputButtonUser {
     cursor: pointer;
-    color: white;
-    border-color: #18b273;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 14px;
-  }
+    margin-top: 15px;
 
+    input {
+        background-color: #18b273;
+        cursor: pointer;
+        color: white;
+        border-color: #18b273;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+    button {
+        margin-left: 10px;
+        background-color: white;
+        cursor: pointer;
+        color: #18b273;
+        border-color: #18b273;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
 }
 //Таблица
 table{
@@ -236,11 +247,18 @@ th{
     background-color: #282828;
   }
 }
-
 .sort{
-  margin-bottom: 2%;
+   display: flex;
+  margin-bottom: 1%;
   width: 100%;
   align-items: center;
+}
+.sort2 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1%;
+    width: 100%;
+    align-items: center;
 }
 .inputDate{
   input{
@@ -269,10 +287,12 @@ th{
   }
 }
 .search-block2{
+    margin-right: 10px;
   display: flex;
   border: 1px solid #18b273;
   border-radius: 10px;
   padding: 0 15px;
+  margin-bottom: 5px;
   input{
     border: 0;
     padding: 8px;
@@ -283,17 +303,51 @@ th{
     margin-bottom: 5px;
   }
 }
+.search-block4 {
+    display: flex;
+    border: 1px solid #18b273;
+    border-radius: 10px;
+    padding: 0 15px;
+    margin-bottom: 5px;
+    input {
+        border: 0;
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    img {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}
+.search-block3 {
+    cursor: pointer;
+    width: 145px;
+    margin-top: 15px;
+    border: 1px solid #18b273;
+    border-radius: 10px;
+    border: 0;
+    padding: 8px;
+    font-size: 13px;
+}
 //Контент
-.content{
-  border-bottom: 1px solid #eaeaea;
-  h1{
-    margin: 0;
-  }
+.content {
+    border-bottom: 1px solid #eaeaea;
+
+    h1 {
+        margin: 0;
+    }
 }
 .contentBLock{
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.contentBLock22 {
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .search-block{
   display: flex;
@@ -327,4 +381,69 @@ th{
     font-size: 13px;
     opacity: 0.5;
   }
+}
+.tbl_header {
+    width: 100%;
+    border-bottom: solid 2px rgba(0, 0, 0, 0.1);
+}
+th {
+    border-bottom: solid 2px rgba(0, 0, 0, 0.1);
+    width: 130px;
+    padding: 20px 15px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    color: rgb(0, 0, 0);
+    text-transform: uppercase;
+}
+
+table {
+    overflow-x: auto;
+    width: 100%;
+    background: white;
+    table-layout: fixed;
+}
+
+td {
+    width: 130px;
+    padding: 13px;
+    text-align: left;
+    vertical-align: middle;
+    font-weight: 300;
+    font-size: 12px;
+    color: rgb(0, 0, 0);
+    border-bottom: solid 1px rgba(116, 116, 116, 0.1);
+}
+.table_edit {
+    background-color: white;
+    cursor: pointer;
+    font-size: 13px;
+    color: #18b273;
+    display: flex;
+    border: 1px solid #18b273;
+    border-radius: 10px;
+    padding: 7px;
+
+    input {
+        border: 0;
+        padding: 8px;
+        font-size: 13px;
+    }
+}
+
+.table_delete {
+    background-color: white;
+    cursor: pointer;
+    font-size: 13px;
+    color: #eb0438;
+    display: flex;
+    border: 1px solid #eb0438;
+    border-radius: 10px;
+    padding: 7px;
+
+    input {
+        border: 0;
+        padding: 8px;
+        font-size: 13px;
+    }
 }

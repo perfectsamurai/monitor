@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Categories({value, onClickCategory}) {
+function Categories({ value = 0, onClickCategory }) {
 
 
     const categories = ['Все','С ошибкой','В работе','Исправленные'];
